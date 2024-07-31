@@ -11,8 +11,12 @@
      <div class="row">
       <div class="col-md-3" id="todo">
         <h5 style="background-color: #ADD8E6;">TODO</h5>
-        <div class="card-container" cdkDropList (cdkDropListDropped)="onDrop($event)">
-          <div class="card mb-3" *ngFor="let task of filteredTasks.todoTasks" cdkDrag [cdkDragData]="task">
+        <div class="card-container" cdkDropList #todoList="cdkDropList"
+        (cdkDropListDropped)="onDrop($event)" 
+        [cdkDropListData]="todoTasks"
+        [cdkDropListConnectedTo]="[inProgressList, doneList]">
+          <div class="card mb-3" *ngFor="let task of filteredTasks.todoTasks" 
+          cdkDrag [cdkDragData]="task">
             <div class="card-body" style="background-color: #ADD8E6;">
               <h5 class="card-title">{{task.taskName}}</h5>
               <p class="card-text">{{task.description}}</p>
@@ -29,7 +33,10 @@
     
       <div class="col-md-3" id="inProgress">
         <h5 style="background-color: #ADD8E6;">IN PROGRESS</h5>
-        <div class="card-container" cdkDropList (cdkDropListDropped)="onDrop($event)">
+        <div class="card-container" cdkDropList #inProgressList="cdkDropList"
+        (cdkDropListDropped)="onDrop($event)"
+        [cdkDropListData]="inProgressTasks"
+        [cdkDropListConnectedTo]="[todoList, doneList]">
           <div class="card mb-3" *ngFor="let task of filteredTasks.inProgressTasks" cdkDrag [cdkDragData]="task">
             <div class="card-body" style="background-color: #ADD8E6;">
               <h5 class="card-title">{{task.taskName}}</h5>
@@ -47,7 +54,10 @@
     
       <div class="col-md-3" id="done">
         <h5 style="background-color: #ADD8E6;">DONE</h5>
-        <div class="card-container" cdkDropList (cdkDropListDropped)="onDrop($event)">
+        <div class="card-container" cdkDropList #doneList="cdkDropList" 
+        (cdkDropListDropped)="onDrop($event)"
+        [cdkDropListData]="doneTasks"
+        [cdkDropListConnectedTo]="[todoList, inProgressList]">
           <div class="card mb-3" *ngFor="let task of filteredTasks.doneTasks" cdkDrag [cdkDragData]="task">
             <div class="card-body" style="background-color: #ADD8E6;">
               <h5 class="card-title">{{task.taskName}}</h5>

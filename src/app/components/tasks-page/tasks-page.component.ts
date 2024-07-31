@@ -1,7 +1,7 @@
 import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CommonServiceService } from '../../services/common-service.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
@@ -26,15 +26,19 @@ export class TasksPageComponent {
   taskCreatedAt: string = '';
 
   todoTasks: any[] = [
-    { id: 100, taskName: 'Task One', description: 'Description 1', createdAt: "2024-07-30 14:37:39" },
-    { id: 110, taskName: 'Task Two', description: 'Description 2', createdAt: "2024-07-30 14:37:39" },
+    { id: 100, taskName: 'Planning', description: 'Description 1', createdAt: "2024-07-30 14:37:39" },
+    { id: 110, taskName: 'Designing', description: 'Description 2', createdAt: "2024-07-30 14:37:39" },
   ];
 
   inProgressTasks: any[] = [
-    { id: 120, taskName: 'Task Three', description: 'Description 3', createdAt: "2024-07-30 14:37:39" },
+    { id: 120, taskName: 'Discussion', description: 'Description 3', createdAt: "2024-07-30 14:37:39" },
+    { id: 121, taskName: 'Requirements', description: 'Description 3', createdAt: "2024-07-30 14:37:39" },
+    { id: 170, taskName: 'Maintainence', description: 'Description 4', createdAt: "2024-07-30 14:37:39" },
   ];
   doneTasks: any[] = [
-    { id: 130, taskName: 'Task Four', description: 'Description 4', createdAt: "2024-07-30 14:37:39" },
+    { id: 140, taskName: 'Coding', description: 'Description 4', createdAt: "2024-07-30 14:37:39" },
+    { id: 130, taskName: 'Implementation', description: 'Description 4', createdAt: "2024-07-30 14:37:39" },
+    { id: 131, taskName: 'Deployment', description: 'Description 4', createdAt: "2024-07-30 14:37:39" },
   ];
 
   filteredTasks = {
@@ -83,31 +87,15 @@ export class TasksPageComponent {
     this.router.navigate(['/login']);
   }
 
-  onDrop(event: CdkDragDrop<any[]>) {
-    console.log(event, "Adada");
-
-    const previousContainer = event.previousContainer;
-    const currentContainer = event.container;
-
-    if (previousContainer === currentContainer) {
-      return;
+  onDrop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
     }
-
-    const task = event.item.data;
-    const previousList = this.getTasksList(previousContainer);
-    const currentList = this.getTasksList(currentContainer);
-
-    // Remove the task from the previous list
-    const previousIndex = previousList.indexOf(task);
-    if (previousIndex > -1) {
-      previousList.splice(previousIndex, 1);
-    }
-
-    // Add the task to the current list
-    currentList.push(task);
-
-    // Update filtered tasks to reflect changes
-    this.filterTasks();
   }
 
   getTasksList(container: any): any[] {
@@ -157,21 +145,40 @@ export class TasksPageComponent {
     });
   }
 
+
   deleteTheTask(task: any) {
     console.log(task);
     if (confirm("Are you sure you want to delete this task?")) {
-      const index = this.todoTasks.findIndex(task => task.id == task.id);
-      if (index !== -1) {
-        this.todoTasks.splice(index, 1);
+      let index;
+      if (this.todoTasks.some(t => t.id === task.id)) {
+        index = this.todoTasks.findIndex(t => t.id === task.id);
+        if (index !== -1) {
+          this.todoTasks.splice(index, 1);
+        }
+      } else if (this.inProgressTasks.some(t => t.id === task.id)) {
+        index = this.inProgressTasks.findIndex(t => t.id === task.id);
+        if (index !== -1) {
+          this.inProgressTasks.splice(index, 1);
+        }
+      } else if (this.doneTasks.some(t => t.id === task.id)) {
+        index = this.doneTasks.findIndex(t => t.id === task.id);
+        if (index !== -1) {
+          this.doneTasks.splice(index, 1);
+        }
       }
-
-      // this.commonService.deleteTheTask(task.id).subscribe((resp : any) => {
+  
+      // this.commonService.deleteTheTask(task.id).subscribe((resp: any) => {
       //   console.log("DELETED");
-      // })
-
-      window.location.reload();
+      // });
+  
+      this.filteredTasks = {
+        todoTasks: this.todoTasks,
+        inProgressTasks: this.inProgressTasks,
+        doneTasks: this.doneTasks,
+      };
     }
   }
+  
 
   close() {
     this.modalService.dismissAll("close");
