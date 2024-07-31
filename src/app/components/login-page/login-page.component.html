@@ -1,0 +1,33 @@
+<div class="login-container">
+  <div class="navbar">
+    <div class="navbar-left">
+    </div>
+    <div class="navbar-right">
+      <button class="btn" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        routerLink="/login">Login</button>
+      <button class="btn" (click)="goToRegister()">Signup</button>
+    </div>
+  </div>
+
+  <div class="login-form">
+    <h2>Login</h2>
+    <h6 *ngIf="showErrMsg" style="color: red;">Invalid Credentials</h6>
+    <h6 *ngIf="showToastMessage" style="color: green;">Login Successful</h6>
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+      <div class="form-footer">
+        <p>Don't have an account? <a routerLink="/register">Signup</a></p>
+        <button class="btn btn-google">Login with Google</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  

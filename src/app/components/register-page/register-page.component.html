@@ -1,0 +1,38 @@
+<div class="signup-container">
+  <div class="navbar">
+    <div class="navbar-left">
+    </div>
+    <div class="navbar-right">
+      <button class="btn" (click)="goToLogin()">Login</button>
+      <button class="btn" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="/signup">Signup</button>
+    </div>
+  </div>
+
+  <div class="signup-form">
+    <h2>Signup</h2>
+    <h6 *ngIf="showErrMsg" style="color: red;">Password didn't matched</h6>
+    <h6 *ngIf="showToastMessage" style="color: green;">Registration Successful</h6>
+    <form (ngSubmit)="signup()">
+      <div class="form-group">
+        <input type="text" placeholder="First Name" [(ngModel)]="firstName" name="firstName" required />
+      </div>
+      <div class="form-group">
+        <input type="text" placeholder="Last Name" [(ngModel)]="lastName" name="lastName" required />
+      </div>
+      <div class="form-group">
+        <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required />
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Signup</button>
+      <div class="form-footer">
+        <p>Already have an account? <a routerLink="/login">Login</a></p>
+        <button class="btn btn-google">Signup with Google</button>
+      </div>
+    </form>
+  </div>
+</div>
