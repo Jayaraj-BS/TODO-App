@@ -25,6 +25,8 @@ export class RegisterPageComponent {
 
   showToastMessage: boolean = false
   showErrMsg : boolean = false
+  showEmailErrorMessage: boolean = false;
+
 
 
   constructor(
@@ -64,6 +66,22 @@ export class RegisterPageComponent {
     //     }, 2000);
     //   }
     // })
+    
+  }
+
+  validateEmail (event : any) {
+    let inputEmail = event.target.value
+    console.log(inputEmail);
+
+    const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (inputEmail === '') {
+      this.showEmailErrorMessage = false;
+    } else if (!emailFormat.test(inputEmail)) {
+      this.showEmailErrorMessage = true;
+    } else {
+      this.showEmailErrorMessage = false;
+    }
     
   }
 
